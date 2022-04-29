@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Course Infos</title>
+    <style>
+       select {
+        border: none;
+        color: black;
+        padding: 15px 32px;
+        text-align: center;
+        text-decoration: black;
+        display: inline-block;
+        font-size: 16px;
+        margin: 4px 2px;
+        cursor: pointer;
+
+       }
+        button {
+            border: none;
+            color: white;
+            padding: 15px 32px;
+            text-align: center;
+            text-decoration: none;
+            display: inline-block;
+            font-size: 16px;
+            margin: 4px 2px;
+            cursor: pointer;
+          }
+        table {
+          font-family: arial, sans-serif;
+          border-collapse: collapse;
+          width: 40%;
+        }
+        
+        td, th {
+          border: 1px solid #dddddd;
+          text-align: left;
+          padding: 8px;
+        }
+        
+        tr:nth-child(even) {
+          background-color: #dddddd;
+        }
+        </style>
+</head>
+<body>
+{%block content%} 
+{%endblock%}   
+<!-- <button type="button"><a href="/revenue">Revenue</a></button>
+    <button type="button"><a href="/data_input">Get Enrollment</a></button>
+    <button type="button"><a href="/resources">Resources</a></button>
+    <button type="button"><a href="/enrollment">Enrollment</a></button>
+    <button type="button"><a href="/classroom_req">Classroom req</a></button>
+    <button type="button"><a href="/course_infos">Course Infos</a></button> -->
+
+<form action="course_infos" method="post">
+{% csrf_token %}
+<select name="School_ID" id="School_ID">
+{% for i in data2 %}
+    {% for j in i %}
+    <option value={{ j }}> {{ j }}</option> 
+    {% endfor %}
+{% endfor %}
+</select>
+  <input type="submit" value="Show Courses">
+</form>
+<form action="course_infos_2" method="post">
+  {% csrf_token %}
+  <select name="Course_ID" id="Course_ID">
+  {% for i in data %}
+      {% for j in i %}
+      <option value={{ j }}> {{ j }}</option> 
+      {% endfor %}
+  {% endfor %}
+  </select>
+    <input type="submit" value="Show Data">
+  </form>
+<h1>Showing Results for {{course_name}} </h1>
+
+<table>
+    <tr>
+        <th>Semester Name and Year</th>
+        <th>Total Enrollment</th>
+    </tr>
+{% for i in data3 %}
+    <tr>
+    {% for j in i %}
+        <td>{{ j }}</td>
+    {% endfor %}
+    </tr>
+{% endfor %}
+
+
+</table>
+<div id="container" style="width: 40%;position:absolute;left:800px;top:150px;">
+  <canvas id="pie-chart"></canvas>
+  <canvas id="pie-chart2"></canvas>
+</div>
+
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js@2.9.3/dist/Chart.min.js"></script>
+<script>
+
+  var config = {
+    type: 'line',
+    fill: false,
+    borderColor: 'rgb(75, 192, 192)',
+    data: {
+      datasets: [{
+        data:  [{% for value in chart_data %} {{ value }}, {% endfor %}],        
+        
+        label: 'Enrollment Count'
+      }],
+      labels: [{% for value2 in chart_labels %} '{{ value2 }}', {% endfor %}],    
+    },
+    options: {
+      responsive: true
+    }
+  };
+  var config2 = {
+    type: 'line',
+    fill: false,
+    borderColor: 'rgb(75, 192, 192)',
+    data: {
+      datasets: [{
+        data:  [{% for value in chart_data2 %} {{ value }}, {% endfor %}],        
+        
+        label: 'From Linear Regression '
+      }],
+      labels: [{% for value2 in chart_labels %} '{{ value2 }}', {% endfor %}],    
+    },
+    options: {
+      responsive: true
+    }
+  };
+
+  window.onload = function() {
+    var ctx = document.getElementById('pie-chart').getContext('2d');
+    window.myPie = new Chart(ctx, config);
+    var ctx2 = document.getElementById('pie-chart2').getContext('2d');
+    window.myPie = new Chart(ctx2, config2);
+
+  };
+
+</script>
+
+
+
+
+</body>
+</html>
